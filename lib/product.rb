@@ -9,4 +9,9 @@ class Product
     SQL
     DB[:connection].execute(sql)
   end
+
+  def customers
+    Customer.find_by_product(self)
+  end
+
 end

@@ -16,11 +16,12 @@ namespace :db do
   task :migrate do
     migrate!
   end
+  
   desc "Drop the database and re-migrate."
   task :reset do
     File.delete("./db/development.sqlite")
     DB[:connection] = SQLite3::Database.new("db/development.sqlite")
-    
+
     migrate!
   end
 end
