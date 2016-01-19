@@ -1,6 +1,6 @@
 class Customer
   attr_accessor :id, :name
-  
+
   def self.create_table
     sql = <<-SQL
       CREATE TABLE IF NOT EXISTS customers (
@@ -11,7 +11,7 @@ class Customer
     DB[:connection].execute(sql)
   end
 
-  def self.find_by_product(product)
+  def self.find_by_product(product_id)
     sql = <<-SQL
       SELECT * FROM customers
       INNER JOIN carts ON carts.customer_id = customers.id
@@ -20,7 +20,7 @@ class Customer
       WHERE products.id = ?
     SQL
 
-    rows = DB[:connection].execute(sql, product.id)
+    rows = DB[:connection].execute(sql, product_id)
 
     Customer.reify_from_rows(rows)
   end
@@ -31,8 +31,8 @@ class Customer
 
   def self.reify_from_row(row)
     self.new.tap do |o|
-      o.id = o[0]
-      o.name = o[1]
+      o.id = row[0]
+      o.name = row[1]
     end
   end
 end

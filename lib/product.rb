@@ -1,7 +1,7 @@
 class Product
   def self.create_table
     sql = <<-SQL
-      CREATE TABlE products(
+      CREATE TABlE IF NOT EXISTS products(
         id INTEGER PRIMARY KEY,
         name STRING,
         price INTEGER
