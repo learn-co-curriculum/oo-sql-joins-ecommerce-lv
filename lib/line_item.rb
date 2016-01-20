@@ -1,5 +1,4 @@
 class LineItem
-
   def self.create_table
     sql = <<-SQL
       CREATE TABlE IF NOT EXISTS line_items(

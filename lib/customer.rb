@@ -11,7 +11,7 @@ class Customer
     DB[:connection].execute(sql)
   end
 
-  def self.find_by_product(product_id)
+  def self.find_by_product_id(product_id)
     sql = <<-SQL
       SELECT * FROM customers
       INNER JOIN carts ON carts.customer_id = customers.id
@@ -34,5 +34,39 @@ class Customer
       o.id = row[0]
       o.name = row[1]
     end
+  end
+
+  def self.most_valuable
+    # Cart.all.sort_by{|c| c.total_price}.last
+    sql = <<-SQL
+      SELECT customers.*, SUM(products.price) as total_price
+      FROM products
+      INNER JOIN line_items ON products.id = line_items.product_id
+      INNER JOIN carts ON carts.id = line_items.cart_id
+      INNER JOIN customers ON customers.id = carts.customer_id
+      GROUP BY customers.id
+      ORDER BY total_price DESC
+    SQL
+    rows = DB[:connection].execute(sql)
+
+    Customer.reify_from_row(rows.first)
+  end
+
+  def total_value
+    products.collect{|p| p.price}.inject(:+)
+  end
+
+  def products
+    Product.find_by_customer_id(self.id)
+  end
+
+  def self.find(id)
+    sql = <<-SQL
+      SELECT * FROM customers WHERE id = ?
+    SQL
+
+    rows = DB[:connection].execute(sql, id)
+
+    Customer.reify_from_rows(rows)
   end
 end
