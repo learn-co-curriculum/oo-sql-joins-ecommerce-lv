@@ -5,7 +5,7 @@ class Cart
     sql = <<-SQL
       CREATE TABLE IF NOT EXISTS carts (
         id INTEGER PRIMARY KEY,
-        customer_id TEXT
+        customer_id INTEGER
       )
     SQL
     DB[:connection].execute(sql)
