@@ -1,3 +1,7 @@
+#CART
+# id Integer
+# customer_id Integer
+
 class Cart
   attr_accessor :id, :customer_id
 
@@ -9,6 +13,14 @@ class Cart
       )
     SQL
     DB[:connection].execute(sql)
+  end
+
+  def save
+    sql = <<-SQL
+      INSERT INTO #{self.class}s (customer_id)
+      VALUES (?)
+    SQL
+      DB[:connection].execute(sql, customer_id)
   end
 
   def total_price
@@ -38,7 +50,6 @@ class Cart
     sql = <<-SQL
       SELECT * FROM carts
     SQL
-
     rows = DB[:connection].execute(sql)
 
     Cart.reify_from_rows(rows)
